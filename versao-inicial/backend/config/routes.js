@@ -9,7 +9,12 @@ module.exports = app => {
 
     app.route('/api/categories')
         .post(app.api.category.save)
-        .get(app.api.category.get)  // <-- Aqui está a correção
+        .get(app.api.category.get) 
+
+
+    //Cuidado com a ordem! Tem que vir antes de /categories/:id
+    app.route('/api/categories/tree')
+        .get(app.api.category.getTree)
 
     app.route('/api/categories/:id')
         .get(app.api.category.getById)
