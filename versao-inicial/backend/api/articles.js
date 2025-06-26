@@ -1,3 +1,5 @@
+const queries = require('./articles')
+
 module.exports = app => {
     const { existsOrError, notExistsOrError } = app.api.validation
 
@@ -68,10 +70,29 @@ module.exports = app => {
             .catch(err => res.status(500).send(err))
     }
 
+    const getByCategory = async (req, res) => {
+        const categoryId = req.params.id
+        const page = req.query.page || 1
+        const result = await app.db.raw(queries.categoryWithChildren,)
+        const ids = categories.rows.map(c => c.id)
+
+
+    app.db({a: 'articles', u:'users'})
+            .select('a.id', 'a.name', 'a.description', 'a.imageUrl', 'a.categoryId', 'a.userId', 'u.nome as userName')
+            .whereRaw('?? = ??', ['a.categoryId', categoryId])
+            .limit(limit).offset(page * limit - limit)
+            .whereIn('categoryId', ids)
+            .orderBy('a.id', 'desc')
+            .then(articles => res.json({ data: articles, count: articles.length, limit }))
+            .catch(err => res.status(500).send(err))
+    
+    }
+
     return {
         save,
         remove,
         get,
-        getById
+        getById,
+        getByCategory
     }
 }
